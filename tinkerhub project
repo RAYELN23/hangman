@@ -1,0 +1,75 @@
+import random
+
+def chooseWord():
+    words = ['childhood', 'love', 'valentines', 'python', 'oxygen', 'chocolate', 'programming', 'language']
+    return words[random.randint(0, len(words) - 1)]
+
+def displayWord(word, guessedLetter):
+    display = ''
+    for letter in word:
+        found = False
+        for guess in guessedLetter:
+            if letter == guess:
+                display = display + letter
+                found = True
+                break
+        if not found:
+            display = display + ' _ '
+    return display
+
+def isValidGuess(guess):
+    if len(guess) != 1:
+        print("Please enter only one letter.")
+        return False
+    if not guess.isalpha():
+        print("Please enter a valid letter.")
+        return False
+    return True
+
+def repeatGame():
+    playAgain = input("Do you want to play again? (yes/no): ").lower()
+    return playAgain.startswith('y')
+
+def hangman():
+    while True:
+        word = chooseWord()
+        guessedLetter = []
+        attempts = 6
+
+        print("Welcome to Hangman game")
+        print(displayWord(word, guessedLetter))
+
+        while attempts > 0:
+            guess = input("Guess a letter: ").lower()
+
+            if not isValidGuess(guess):
+                continue
+
+            if guess in guessedLetter:
+                print("You have already guessed the letter.")
+                continue
+
+            found = False
+            for letter in word:
+                if letter == guess:
+                    guessedLetter.append(guess)
+                    print("Good guess")
+                    found = True
+                    break
+            if not found:
+                attempts -= 1
+                print("Wrong guess. You have {} attempts left.".format(attempts))
+
+            print(displayWord(word, guessedLetter))
+
+            if '_' not in displayWord(word, guessedLetter):
+                print("Congratulations, You have guessed the word: {}".format(word))
+                break
+
+        if '_' in displayWord(word, guessedLetter):
+            print("Sorry, you're out of attempts. The word was: {}".format(word))
+
+        if not repeatGame():
+            break
+
+hangman()
